@@ -26,7 +26,7 @@ const chatConfig = {
     "I am anxious about the future.",
   ],
   chatInputPlaceholder: "Chat with this agent...",
-  maxChatHeight: 200,
+  maxChatHeight: 400,
 };
 
 export default chatConfig;
