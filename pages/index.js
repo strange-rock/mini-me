@@ -381,43 +381,42 @@ export default function AgentComponent() {
       }}>
         {showPrompts && conversation.length === 0 && (
           <div 
-            key={currentPromptIndex}
             style={{
-            display: "inline-flex",
-            height: "50px",
-            borderRadius: "16px",
-            background: "#393836",
-            alignItems: "center",
-            justifyContent: "center",
-            color: "#FFFFFF",
-            fontSize: "14px",
-            padding: "0 16px",
-            cursor: "pointer",
-            whiteSpace: "nowrap",
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-            alignSelf: "flex-start",
-            animation: "promptIn 0.5s cubic-bezier(0.15, 1.15, 0.6, 1.0) forwards",
-            '&:hover': {
-              transform: "scale(1.02)",
-            }
-          }}
-          onClick={() => handlePromptClick(chatConfig.suggestedPrompts[currentPromptIndex])}
+              display: "inline-flex",
+              height: "50px",
+              borderRadius: "16px",
+              background: "#393836",
+              alignItems: "center",
+              justifyContent: "center",
+              color: "#FFFFFF",
+              fontSize: "14px",
+              padding: "0 16px",
+              cursor: "pointer",
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              alignSelf: "flex-start",
+              '&:hover': {
+                transform: "scale(1.02)",
+              }
+            }}
+            onClick={() => handlePromptClick(chatConfig.suggestedPrompts[currentPromptIndex])}
           >
-            {chatConfig.suggestedPrompts[currentPromptIndex].split(' ').map((word, index) => (
-              <span
-                key={`${currentPromptIndex}-${index}`}
-                style={{
-                  display: 'inline-block',
-                  animation: `promptIn 0.5s cubic-bezier(0.15, 1.15, 0.6, 1.0) forwards`,
-                  animationDelay: `${index * 0.1}s`,
-                  opacity: 0,
-                  marginRight: '4px'
-                }}
-              >
-                {word}
-              </span>
-            ))}
+            <div key={currentPromptIndex} style={{ display: 'flex', gap: '4px' }}>
+              {chatConfig.suggestedPrompts[currentPromptIndex].split(' ').map((word, index) => (
+                <span
+                  key={`${currentPromptIndex}-${index}`}
+                  style={{
+                    display: 'inline-block',
+                    animation: `promptIn 0.5s cubic-bezier(0.15, 1.15, 0.6, 1.0) forwards`,
+                    animationDelay: `${index * 0.1}s`,
+                    opacity: 0
+                  }}
+                >
+                  {word}
+                </span>
+              ))}
+            </div>
           </div>
         )}
       </div>
