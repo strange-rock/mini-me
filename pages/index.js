@@ -102,23 +102,54 @@ export default function AgentComponent() {
   // State to track if the submit button is hovered.
   const [isSubmitHovered, setIsSubmitHovered] = useState(false);
 
+  // Initialize click position state
+  const [clickPosition, setClickPosition] = useState({ x: 50, y: 50 });
+
+  // Add typing indicator state
+  const [isTyping, setIsTyping] = useState(false);
+
+  // Add state for cycling prompts
+  const [currentPromptIndex, setCurrentPromptIndex] = useState(0);
+
+  // Add state to track if prompts should be shown
+  const [showPrompts, setShowPrompts] = useState(true);
+
   // Initialize session ID and user ID on the client side
   useEffect(() => {
     setSessionId(getSessionId());
     setUserId(getUserId());
   }, []);
 
+  // Setup prompt cycling
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentPromptIndex((prevIndex) => 
+        (prevIndex + 1) % chatConfig.suggestedPrompts.length
+      );
+    }, 2000);
+
+    return () => clearInterval(interval);
+  }, []);
+
   /**
    * Scrolls the chat container to the bottom to ensure the latest message is visible.
    */
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: "smooth", block: "end" });
+      // Prevent page scroll
+      const chatContainer = document.querySelector('.chat-container');
+      if (chatContainer) {
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+      }
+    }
   };
 
   // Scroll to the latest message whenever the conversation updates.
   useEffect(() => {
-    if (document.querySelector(".chat-container")) {
-      scrollToBottom();
+    const chatContainer = document.querySelector('.chat-container');
+    if (chatContainer && conversation.length > 0) {
+      chatContainer.scrollTop = chatContainer.scrollHeight;
     }
   }, [conversation]);
 
@@ -142,26 +173,17 @@ export default function AgentComponent() {
    * @returns {Promise<void>} A promise that resolves when the submission is complete.
    */
   const submitMessage = async (userInput) => {
-    // If the message is empty, do nothing.
     if (!userInput.trim()) return;
-
-    // Clear the input immediately after user submits
     setMessage("");
-
-    // Clear any previous errors.
     setError(null);
 
-    // Create a new conversation entry for the user's message.
     const userMessage = {
       role: "user",
       content: userInput.trim(),
     };
 
-    // Update the conversation state by adding the user's message.
     setConversation((prev) => [...prev, userMessage]);
 
-    // Prepare the payload for the API call.
-    // Note: In production, user_id and session_id should be uniquely generated.
     const payload = {
       data: {
         message: userMessage,
@@ -174,10 +196,9 @@ export default function AgentComponent() {
     };
 
     try {
-      // Set loading state to true to trigger the animation.
       setIsLoading(true);
+      setIsTyping(true); // Show typing indicator
 
-      // Send a POST request to the serverless API endpoint on Vercel.
       const res = await fetch("/api/proxy", {
         method: "POST",
         headers: {
@@ -186,39 +207,31 @@ export default function AgentComponent() {
         body: JSON.stringify(payload),
       });
 
-      // If the server response is not OK, throw an error.
       if (!res.ok) {
         throw new Error(`Server error: ${res.status}`);
       }
 
-      // Parse the JSON response from the API.
       const data = await res.json();
 
-      // Extract the agent's reply from output_data.content.
-      // If output_data or content is missing, fall back to a default message.
-      const agentReply =
-        data.output_data && data.output_data.content
-          ? data.output_data.content
-          : "No valid response received from agent.";
+      // Simulate a small delay for typing animation
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      setIsTyping(false); // Hide typing indicator
 
-      // Create a new conversation entry for the agent's response.
+      const agentReply = data.output_data && data.output_data.content
+        ? data.output_data.content
+        : "No valid response received from agent.";
+
       const agentMessage = {
         role: "agent",
         content: agentReply,
       };
 
-      // Update the conversation state by adding the agent's message.
       setConversation((prev) => [...prev, agentMessage]);
-
-      // Clear the user input field.
       setMessage("");
     } catch (err) {
-      // Log the error to the console for debugging.
       console.error("Error fetching agent response:", err);
-      // Update the error state so that the user is informed.
       setError(err.message);
     } finally {
-      // Reset the loading state regardless of success or error.
       setIsLoading(false);
     }
   };
@@ -233,43 +246,44 @@ export default function AgentComponent() {
   const bubbleStyles = {
     user: {
       alignSelf: "flex-end",
-      backgroundColor: "#DCF8C6",
-      color: "#000",
-      padding: "10px",
-      borderRadius: "10px 0 0 10px",
-      borderRight: "5px solid #8EDB5A",
-      margin: "0",
+      backgroundColor: "#393836",
+      color: "#FFFFFF",
+      padding: "12px 16px",
+      borderRadius: "18px 18px 4px 18px",
+      margin: "4px 0",
       maxWidth: "80%",
-      fontSize: "12px",
+      fontSize: "14px",
+      boxShadow: "0 2px 4px rgba(37, 99, 235, 0.1)",
+      transform: "translateY(20px) scale(0.9)",
+      opacity: 0,
+      animation: "bubbleIn 0.3s ease-out forwards",
+      fontFamily: "Switzer, sans-serif",
     },
     agent: {
       alignSelf: "flex-start",
-      backgroundColor: "#fff",
-      color: "#000",
-      padding: "10px",
-      borderRadius: "0 10px 10px 0",
-      borderLeft: "5px solid #aaf",
-      margin: "0",
+      backgroundColor: "#F1EFF0",
+      color: "#000000",
+      padding: "12px 16px",
+      borderRadius: "18px 18px 18px 4px",
+      margin: "4px 0",
       maxWidth: "80%",
-      fontSize: "12px",
+      fontSize: "14px",
+      boxShadow: "0 2px 4px rgba(0, 0, 0, 0.05)",
+      transform: "translateY(20px) scale(0.9)",
+      opacity: 0,
+      animation: "bubbleIn 0.3s ease-out forwards",
+      fontFamily: "Switzer, sans-serif",
     },
   };
 
   /**
    * Handles the click event on a suggested prompt.
-   *
-   * Sets the chat input to the prompt text when clicked.
-   * Submit the prompt to the chat
-   *
    * @param {Object} prompt - The prompt object containing text and autoSubmit flag.
+   * @param {Event} event - The click event
    */
   const handlePromptClick = async (prompt) => {
-    // Set the chat input to the prompt text.
-    setMessage(prompt);
-    // Submit the prompt to the chat.
-    setTimeout(() => {
-      submitMessage(prompt);
-    }, 0); // Ensures the state has been updated before calling submitMessage
+    setShowPrompts(false); // Hide prompts after clicking
+    await submitMessage(prompt); // Send the message
   };
 
   /**
@@ -292,135 +306,117 @@ export default function AgentComponent() {
   return (
     <div
       style={{
-        padding: "5px",
-        width: "100vw",
+        display: "flex",
         maxWidth: "600px",
-        margin: "0 auto",
-        fontFamily: "Arial, sans-serif",
-        borderRadius: "5px",
-        border: "1px solid #ccc",
+        width: "100%",
+        padding: "8px",
+        flexDirection: "column",
+        alignItems: "stretch",
+        gap: "7px",
+        alignSelf: "stretch",
+        borderRadius: "24px",
+        background: "#FFF",
+        margin: "20px auto",
+        boxShadow: "rgba(0, 0, 0, 0.2) 0px 0.4829px 1.25554px -2.25px, rgba(0, 0, 0, 0.02) 0px 4px 10.4px -4.5px, rgba(0, 0, 0, 0.18) 0px 0.60219px 0.60219px -1.25px, rgba(0, 0, 0, 0.16) 0px 2.28853px 2.28853px -2.5px, rgba(0, 0, 0, 0.06) 0px 10px 10px -3.75px",
+        position: "relative",
+        overflow: "hidden",
+        fontFamily: "Switzer, sans-serif",
+        boxSizing: "border-box",
       }}
     >
-      {/* Descriptive header for the chat application */}
-      <div
-        className="chat-header"
-        style={{
-          marginBottom: "0px",
-          userSelect: "none",
-        }}
-      >
-        <div
-          className="chat-title"
-          style={{
-            backgroundColor: "#000",
-            color: "#fff",
-            padding: "10px",
-            borderRadius: "5px",
-            fontSize: "16px",
-            fontWeight: "bold",
-          }}
-        >
-          {chatConfig.header.title}
-        </div>
-        <div
-          className="chat-description"
-          style={{
-            padding: "10px",
-            borderRadius: "5px",
-            fontSize: "12px",
-            fontWeight: "normal",
-          }}
-        >
-          {chatConfig.header.description}
-        </div>
-      </div>
-
-      {/* Chat conversation container displaying messages in bubbles */}
+      {/* Chat Container */}
       <div
         className="chat-container"
         style={{
+          height: "355px",
+          width: "100%",
+          alignSelf: "stretch",
+          borderRadius: "16px",
+          background: "#D9D9D9",
+          padding: "16px",
+          overflowY: "auto",
           display: "flex",
           flexDirection: "column",
-          gap: "5px",
-          marginBottom: "0px",
-          height: chatConfig.maxChatHeight, // Set a fixed height for the chat container
-          overflowY: "auto", // Enable vertical scrolling
-          border: "2px solid #000", // Optional: border around the chat area
-          padding: "0px",
-          borderRadius: "5px 5px 0 0",
-          backgroundColor: "#eee",
-          width: "100%",
+          gap: "12px",
+          boxSizing: "border-box",
         }}
       >
         {conversation.map((msg, index) => (
           <div
             key={index}
-            style={msg.role === "user" ? bubbleStyles.user : bubbleStyles.agent}
+            style={{
+              ...msg.role === "user" ? bubbleStyles.user : bubbleStyles.agent,
+              animationDelay: `${index * 0.1}s`,
+            }}
           >
             {msg.role === "agent" ? (
-              // Render the agent's response as Markdown.
               <ReactMarkdown>{msg.content}</ReactMarkdown>
             ) : (
-              // Display user messages as plain text.
               msg.content
             )}
           </div>
         ))}
-        {/* Dummy element to ensure the latest message is scrolled into view */}
+        {isTyping && (
+          <div className="typing-indicator">
+            <div className="dot"></div>
+            <div className="dot"></div>
+            <div className="dot"></div>
+          </div>
+        )}
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Suggested Prompts Section */}
-      <div
-        style={{
+      {/* Suggested Prompts - Only show if no conversation and showPrompts is true */}
+      {showPrompts && conversation.length === 0 && (
+        <div style={{
+          width: "305px",
+          height: "50px",
+          borderRadius: "16px",
+          background: "#393836",
           display: "flex",
-          flexWrap: "wrap",
-          border: "1px solid #ccc",
-          marginBottom: "0px",
+          alignItems: "center",
+          justifyContent: "center",
+          color: "#FFFFFF",
+          fontSize: "14px",
+          padding: "0 16px",
+          transition: "opacity 0.3s ease, transform 0.3s ease",
+          opacity: isLoading ? 0.5 : 1,
+          cursor: "pointer",
+          whiteSpace: "nowrap",
+          overflow: "hidden",
+          textOverflow: "ellipsis",
+          alignSelf: "flex-start",
+          transform: isLoading ? "scale(0.98)" : "scale(1)",
+          '&:hover': {
+            transform: "scale(1.02)",
+          }
         }}
-      >
-        <div style={{ margin: "2px", fontSize: "10px", fontStyle: "italic" }}>
-          {chatConfig.suggestedPromptsTitle}
+        onClick={() => handlePromptClick(chatConfig.suggestedPrompts[currentPromptIndex])}
+        >
+          {chatConfig.suggestedPrompts[currentPromptIndex]}
         </div>
-        <div style={{ display: "flex", flexWrap: "wrap", gap: "2px" }}>
-          {chatConfig.suggestedPrompts.map((prompt, index) => (
-            <button
-              key={index}
-              onClick={() => handlePromptClick(prompt)}
-              onMouseOver={() => handlePromptMouseOver(index)}
-              onMouseOut={handlePromptMouseOut}
-              disabled={isLoading}
-              style={{
-                padding: "2px 4px",
-                borderRadius: "5px",
-                border: "1px solid #ccc",
-                margin: "2px",
-                backgroundColor: hoveredIndex === index ? "#ddd" : "#f4f4f4",
-                color: hoveredIndex === index ? "#000" : "#888",
-                fontSize: "12px",
-                cursor: "pointer",
-              }}
-            >
-              {prompt}
-            </button>
-          ))}
-        </div>
-      </div>
+      )}
 
-      {/* Chat input form for the user to send messages */}
-      <form onSubmit={handleSubmit} style={{ display: "flex", gap: "0px" }}>
+      {/* Input Container */}
+      <div style={{
+        display: "flex",
+        alignItems: "center",
+        gap: "10px",
+        width: "100%",
+        boxSizing: "border-box",
+      }}>
+        {/* Text Box */}
         <div
           style={{
             display: "flex",
-            alignItems: "center",
-            gap: 0,
-            width: "100%",
-            borderBottom: "1px solid #ccc",
-            borderLeft: "1px solid #ccc",
-            borderRight: "1px solid #ccc",
-            borderRadius: "0 0 5px 5px",
-            overflow: "hidden",
-            backgroundColor: "#fff",
+            padding: "6px",
+            justifyContent: "flex-end",
+            alignItems: "flex-start",
+            gap: "10px",
+            flex: 1,
+            borderRadius: "16px",
+            background: "#F1EFF0",
+            boxSizing: "border-box",
           }}
         >
           <input
@@ -430,122 +426,155 @@ export default function AgentComponent() {
             value={message}
             onChange={(e) => setMessage(e.target.value)}
             style={{
-              flexGrow: 1,
-              padding: "10px",
+              flex: 1,
               border: "none",
               outline: "none",
-              backgroundColor: "#fff",
+              background: "transparent",
+              padding: "12px",
+              fontSize: "14px",
+              color: "#000000",
+              fontFamily: "Switzer, sans-serif",
+              width: "100%",
+              boxSizing: "border-box",
             }}
           />
-          <button
-            type="submit"
-            aria-label="Send prompt"
-            data-testid="send-button"
-            disabled={isLoading}
-            onMouseOver={() => setIsSubmitHovered(true)}
-            onMouseOut={() => setIsSubmitHovered(false)}
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              borderRadius: "9999px",
-              transition: "opacity 0.2s ease",
-              backgroundColor: isSubmitHovered ? "#007BFF" : "#000",
-              color: isSubmitHovered ? "#fff" : "#fff",
-              height: "36px",
-              width: "36px",
-              border: "5px solid #fff",
-              cursor: isLoading ? "default" : "pointer",
-            }}
-          >
-            {!isLoading ? (
-              <svg
-                width="36px"
-                height="36px"
-                viewBox="8 8 16 16"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  fillRule="evenodd"
-                  clipRule="evenodd"
-                  d="M15.1918 8.90615C15.6381 8.45983 16.3618 8.45983 16.8081 8.90615L21.9509 14.049C22.3972 14.4953 22.3972 15.2189 21.9509 15.6652C21.5046 16.1116 20.781 16.1116 20.3347 15.6652L17.1428 12.4734V22.2857C17.1428 22.9169 16.6311 23.4286 15.9999 23.4286C15.3688 23.4286 14.8571 22.9169 14.8571 22.2857V12.4734L11.6652 15.6652C11.2189 16.1116 10.4953 16.1116 10.049 15.6652C9.60265 15.2189 9.60265 14.4953 10.049 14.049L15.1918 8.90615Z"
-                  fill="currentColor"
-                ></path>
-              </svg>
-            ) : (
-              <svg
-                width="36px"
-                height="36px"
-                viewBox="0 0 50 50"
-                style={{ animation: "spin 1s linear infinite" }}
-              >
-                <circle
-                  cx="25"
-                  cy="25"
-                  r="20"
-                  stroke="#888"
-                  strokeWidth="12"
-                  fill="none"
-                />
-                <circle
-                  cx="25"
-                  cy="25"
-                  r="20"
-                  stroke="#fff"
-                  strokeWidth="12"
-                  strokeDasharray="31.4 31.4"
-                  fill="none"
-                />
-              </svg>
-            )}
-          </button>
         </div>
-      </form>
 
-      {/* Tiny display of user ID and session ID */}
-      <div
-        style={{
-          marginTop: "2px",
-          fontSize: "9px",
-          color: "#999",
-          textAlign: "center",
-        }}
-      >
-        User ID: {userId} | Session ID: {sessionId}
+        {/* Send Button */}
+        <button
+          onClick={handleSubmit}
+          aria-label="Send prompt"
+          data-testid="send-button"
+          disabled={isLoading}
+          style={{
+            width: "53px",
+            height: "53px",
+            borderRadius: "10px",
+            border: "1px solid #5B5B5B",
+            background: "#393836",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            cursor: isLoading ? "default" : "pointer",
+            transition: "transform 0.2s ease",
+            transform: isSubmitHovered ? "scale(1.05)" : "scale(1)",
+            padding: 0,
+            flexShrink: 0,
+            boxSizing: "border-box",
+          }}
+          onMouseOver={() => setIsSubmitHovered(true)}
+          onMouseOut={() => setIsSubmitHovered(false)}
+        >
+          {!isLoading ? (
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M22 2L11 13"
+                stroke="#FFFFFF"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+              <path
+                d="M22 2L15 22L11 13L2 9L22 2Z"
+                stroke="#FFFFFF"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          ) : (
+            <div className="typing-indicator">
+              <div className="dot"></div>
+              <div className="dot"></div>
+              <div className="dot"></div>
+            </div>
+          )}
+        </button>
       </div>
 
       {/* Display error message if one occurs */}
       {error && (
-        <div style={{ color: "red", marginTop: "20px" }}>
+        <div 
+          style={{ 
+            color: "#EF4444", 
+            marginTop: "20px",
+            padding: "12px",
+            borderRadius: "8px",
+            backgroundColor: "#FEF2F2",
+            border: "1px solid #FCA5A5",
+            fontSize: "14px",
+            animation: "fadeIn 0.3s ease-out forwards"
+          }}
+        >
           <strong>Error:</strong> {error}
         </div>
       )}
 
-      {/* Define keyframes for the spin animation */}
       <style jsx>{`
+        @import url('https://fonts.googleapis.com/css2?family=Switzer:wght@400;500;600&display=swap');
+
+        * {
+          box-sizing: border-box;
+        }
+
         .chat-container::-webkit-scrollbar {
-          width: 8px; /* Make scrollbar thinner */
+          width: 6px;
         }
         .chat-container::-webkit-scrollbar-track {
-          background: transparent;
-          border-radius: 5px; /* Ensures the track has rounded corners */
+          background: rgba(0,0,0,0.05);
+          border-radius: 3px;
         }
         .chat-container::-webkit-scrollbar-thumb {
-          background-color: #ccc;
-          border-radius: 5px;
+          background-color: rgba(0,0,0,0.2);
+          border-radius: 3px;
+          transition: background-color 0.3s ease;
         }
-        /* Firefox scrollbar styling */
+        .chat-container::-webkit-scrollbar-thumb:hover {
+          background-color: rgba(0,0,0,0.3);
+        }
         .chat-container {
           scrollbar-width: thin;
-          scrollbar-color: #ccc transparent;
+          scrollbar-color: rgba(0,0,0,0.2) rgba(0,0,0,0.05);
         }
-        @keyframes spin {
-          from {
-            transform: rotate(0deg);
+        
+        .typing-indicator {
+          display: flex;
+          align-items: center;
+          gap: 4px;
+          padding: 8px;
+        }
+        
+        .dot {
+          width: 6px;
+          height: 6px;
+          background: #FFFFFF;
+          border-radius: 50%;
+          animation: typing 1s infinite;
+        }
+        
+        .dot:nth-child(1) { animation-delay: 0s; }
+        .dot:nth-child(2) { animation-delay: 0.2s; }
+        .dot:nth-child(3) { animation-delay: 0.4s; }
+        
+        @keyframes typing {
+          0%, 100% { transform: translateY(0px); }
+          50% { transform: translateY(-4px); }
+        }
+        
+        @keyframes bubbleIn {
+          0% {
+            opacity: 0;
+            transform: translateY(20px) scale(0.9);
           }
-          to {
-            transform: rotate(360deg);
+          100% {
+            opacity: 1;
+            transform: translateY(0) scale(1);
           }
         }
       `}</style>
