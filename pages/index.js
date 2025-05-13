@@ -249,7 +249,7 @@ export default function AgentComponent() {
       backgroundColor: "#393836",
       color: "#FFFFFF",
       padding: "8px 16px",
-      borderRadius: "18px 18px 18px 4px",
+      borderRadius: "18px 18px 4px 18px",
       margin: "4px 0",
       maxWidth: "80%",
       fontSize: "14px",
