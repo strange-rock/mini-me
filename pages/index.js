@@ -247,6 +247,7 @@ export default function AgentComponent() {
     user: {
       alignSelf: "flex-end",
       backgroundColor: "#393836",
+      border: "1px solid #5F5F5F",
       color: "#FFFFFF",
       padding: "12px 16px",
       borderRadius: "18px 18px 4px 18px",
@@ -258,11 +259,11 @@ export default function AgentComponent() {
       opacity: 0,
       animation: "bubbleIn 0.3s ease-out forwards",
       fontFamily: "Switzer, sans-serif",
-      boxShadow: "0px 9px 6px -6px rgba(57, 56, 54, 0.25)",
     },
     agent: {
       alignSelf: "flex-start",
       backgroundColor: "#F1EFF0",
+      border: "1px solid #DFDBDD",
       color: "#000000",
       padding: "12px 16px",
       borderRadius: "18px 18px 18px 4px",
@@ -274,7 +275,6 @@ export default function AgentComponent() {
       opacity: 0,
       animation: "bubbleIn 0.3s ease-out forwards",
       fontFamily: "Switzer, sans-serif",
-      boxShadow: "0px 9px 6px -6px rgba(57, 56, 54, 0.25)",
     },
   };
 
@@ -472,7 +472,7 @@ export default function AgentComponent() {
               outline: "none",
               background: "transparent",
               padding: "12px",
-              fontSize: "14px",
+              fontSize: "16px",
               color: "#000000",
               fontFamily: "Switzer, sans-serif",
               width: "100%",
