@@ -378,7 +378,7 @@ export default function AgentComponent() {
         transition: "opacity 0.3s ease, height 0.3s ease",
         pointerEvents: showPrompts && conversation.length === 0 ? "auto" : "none",
         overflow: "hidden",
-        marginBottom: showPrompts && conversation.length === 0 ? "10px" : "0"
+        marginBottom: showPrompts && conversation.length === 0 ? "2px" : "0"
       }}>
         {showPrompts && conversation.length === 0 && (
           <div 
