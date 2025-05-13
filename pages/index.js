@@ -384,7 +384,7 @@ export default function AgentComponent() {
           <div 
             style={{
               display: "inline-flex",
-              height: "42px", // Slightly reduced height
+              height: "50px",
               borderRadius: "16px",
               background: "#393836",
               alignItems: "center",
