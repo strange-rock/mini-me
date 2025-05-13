@@ -378,7 +378,7 @@ export default function AgentComponent() {
         transition: "opacity 0.3s ease, height 0.3s ease",
         pointerEvents: showPrompts && conversation.length === 0 ? "auto" : "none",
         overflow: "hidden",
-        marginBottom: showPrompts && conversation.length === 0 ? "8px" : "0"
+        marginBottom: showPrompts && conversation.length === 0 ? "12px" : "0"
       }}>
         {showPrompts && conversation.length === 0 && (
           <div 
@@ -427,7 +427,7 @@ export default function AgentComponent() {
       <div style={{
         display: "flex",
         alignItems: "center",
-        gap: "10px",
+        gap: "8px",
         width: "100%",
         boxSizing: "border-box",
       }}>
@@ -439,7 +439,7 @@ export default function AgentComponent() {
             justifyContent: "flex-end",
             alignItems: "flex-start",
             gap: "10px",
-            flex: 1,
+            flex: "1 0 calc(100% - 61px)", // 53px button width + 8px gap
             borderRadius: "16px",
             background: "#F1EFF0",
             boxSizing: "border-box",
@@ -607,7 +607,7 @@ export default function AgentComponent() {
         @keyframes promptIn {
           0% {
             opacity: 0;
-            transform: translateY(10px);
+            transform: translateY(5px);
             filter: blur(6px);
           }
           100% {
