@@ -371,20 +371,20 @@ export default function AgentComponent() {
 
       {/* Suggested Prompts Container */}
       <div style={{
-        height: showPrompts && conversation.length === 0 ? "50px" : "0",
+        height: showPrompts && conversation.length === 0 ? "42px" : "0",
         display: "flex",
         alignItems: "center",
         opacity: showPrompts && conversation.length === 0 ? 1 : 0,
         transition: "opacity 0.3s ease, height 0.3s ease",
         pointerEvents: showPrompts && conversation.length === 0 ? "auto" : "none",
         overflow: "hidden",
-        marginBottom: showPrompts && conversation.length === 0 ? "0px" : "0"
+        marginBottom: showPrompts && conversation.length === 0 ? "8px" : "0"
       }}>
         {showPrompts && conversation.length === 0 && (
           <div 
             style={{
               display: "inline-flex",
-              height: "50px",
+              height: "42px",
               borderRadius: "16px",
               background: "#393836",
               alignItems: "center",
