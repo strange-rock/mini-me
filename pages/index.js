@@ -248,8 +248,8 @@ export default function AgentComponent() {
       alignSelf: "flex-end",
       backgroundColor: "#393836",
       color: "#FFFFFF",
-      padding: "12px 16px",
-      borderRadius: "18px 18px 4px 18px",
+      padding: "10px 16px",
+      borderRadius: "12px 12px 2px 12px",
       margin: "4px 0",
       maxWidth: "80%",
       fontSize: "14px",
@@ -615,6 +615,21 @@ export default function AgentComponent() {
             transform: translateY(0);
             filter: blur(0);
           }
+        }
+
+        /* Add styles for markdown paragraphs */
+        p {
+          margin: 8px 0;
+        }
+        
+        /* First paragraph should not have top margin */
+        p:first-child {
+          margin-top: 0;
+        }
+        
+        /* Last paragraph should not have bottom margin */
+        p:last-child {
+          margin-bottom: 0;
         }
       `}</style>
     </div>
