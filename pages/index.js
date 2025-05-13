@@ -322,13 +322,14 @@ export default function AgentComponent() {
         overflow: "hidden",
         fontFamily: "Switzer, sans-serif",
         boxSizing: "border-box",
+        height: "480px", // Fixed height for main container
       }}
     >
       {/* Chat Container */}
       <div
         className="chat-container"
         style={{
-          height: "355px",
+          height: showPrompts && conversation.length === 0 ? "355px" : "412px", // Adjust height based on prompts visibility
           width: "100%",
           alignSelf: "stretch",
           borderRadius: "16px",
@@ -339,6 +340,7 @@ export default function AgentComponent() {
           flexDirection: "column",
           gap: "12px",
           boxSizing: "border-box",
+          transition: "height 0.3s ease", // Smooth height transition
         }}
       >
         {conversation.map((msg, index) => (
@@ -366,35 +368,44 @@ export default function AgentComponent() {
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Suggested Prompts - Only show if no conversation and showPrompts is true */}
-      {showPrompts && conversation.length === 0 && (
-        <div style={{
-          display: "inline-flex",
-          height: "50px",
-          borderRadius: "16px",
-          background: "#393836",
-          alignItems: "center",
-          justifyContent: "center",
-          color: "#FFFFFF",
-          fontSize: "14px",
-          padding: "0 16px",
-          transition: "opacity 0.3s ease, transform 0.3s ease",
-          opacity: isLoading ? 0.5 : 1,
-          cursor: "pointer",
-          whiteSpace: "nowrap",
-          overflow: "hidden",
-          textOverflow: "ellipsis",
-          alignSelf: "flex-start",
-          transform: isLoading ? "scale(0.98)" : "scale(1)",
-          '&:hover': {
-            transform: "scale(1.02)",
-          }
-        }}
-        onClick={() => handlePromptClick(chatConfig.suggestedPrompts[currentPromptIndex])}
-        >
-          {chatConfig.suggestedPrompts[currentPromptIndex]}
-        </div>
-      )}
+      {/* Suggested Prompts Container - with fixed height space */}
+      <div style={{
+        height: "50px",
+        display: "flex",
+        alignItems: "center",
+        opacity: showPrompts && conversation.length === 0 ? 1 : 0,
+        transition: "opacity 0.3s ease",
+        pointerEvents: showPrompts && conversation.length === 0 ? "auto" : "none",
+      }}>
+        {showPrompts && conversation.length === 0 && (
+          <div style={{
+            display: "inline-flex",
+            height: "50px",
+            borderRadius: "16px",
+            background: "#393836",
+            alignItems: "center",
+            justifyContent: "center",
+            color: "#FFFFFF",
+            fontSize: "14px",
+            padding: "0 16px",
+            transition: "opacity 0.3s ease, transform 0.3s ease",
+            opacity: isLoading ? 0.5 : 1,
+            cursor: "pointer",
+            whiteSpace: "nowrap",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            alignSelf: "flex-start",
+            transform: isLoading ? "scale(0.98)" : "scale(1)",
+            '&:hover': {
+              transform: "scale(1.02)",
+            }
+          }}
+          onClick={() => handlePromptClick(chatConfig.suggestedPrompts[currentPromptIndex])}
+          >
+            {chatConfig.suggestedPrompts[currentPromptIndex]}
+          </div>
+        )}
+      </div>
 
       {/* Input Container */}
       <div style={{
