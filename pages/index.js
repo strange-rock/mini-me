@@ -258,6 +258,7 @@ export default function AgentComponent() {
       opacity: 0,
       animation: "bubbleIn 0.3s ease-out forwards",
       fontFamily: "Switzer, sans-serif",
+      boxShadow: "0px 9px 6px -6px rgba(57, 56, 54, 0.25)",
     },
     agent: {
       alignSelf: "flex-start",
@@ -273,6 +274,7 @@ export default function AgentComponent() {
       opacity: 0,
       animation: "bubbleIn 0.3s ease-out forwards",
       fontFamily: "Switzer, sans-serif",
+      boxShadow: "0px 9px 6px -6px rgba(57, 56, 54, 0.25)",
     },
   };
 
@@ -470,7 +472,7 @@ export default function AgentComponent() {
               outline: "none",
               background: "transparent",
               padding: "12px",
-              fontSize: "14px",
+              fontSize: "20px",
               color: "#000000",
               fontFamily: "Switzer, sans-serif",
               width: "100%",
