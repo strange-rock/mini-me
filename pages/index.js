@@ -248,8 +248,8 @@ export default function AgentComponent() {
       alignSelf: "flex-end",
       backgroundColor: "#393836",
       color: "#FFFFFF",
-      padding: "10px 16px",
-      borderRadius: "12px 12px 2px 12px",
+      padding: "8px 16px",
+      borderRadius: "18px 18px 18px 4px",
       margin: "4px 0",
       maxWidth: "80%",
       fontSize: "14px",
@@ -263,7 +263,7 @@ export default function AgentComponent() {
       alignSelf: "flex-start",
       backgroundColor: "#F1EFF0",
       color: "#000000",
-      padding: "12px 16px",
+      padding: "8px 16px",
       borderRadius: "18px 18px 18px 4px",
       margin: "4px 0",
       maxWidth: "80%",
@@ -619,6 +619,11 @@ export default function AgentComponent() {
 
         /* Add styles for markdown paragraphs */
         p {
+          display: block;
+          margin-block-start: 0;
+          margin-block-end: 0;
+          margin-inline-start: 0px;
+          margin-inline-end: 0px;
           margin: 8px 0;
         }
         
