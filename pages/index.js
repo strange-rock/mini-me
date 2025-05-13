@@ -378,12 +378,14 @@ export default function AgentComponent() {
         transition: "opacity 0.3s ease, height 0.3s ease",
         pointerEvents: showPrompts && conversation.length === 0 ? "auto" : "none",
         overflow: "hidden",
+        marginBottom: showPrompts && conversation.length === 0 ? "8px" : "0",
+        transform: "translateY(-4px)"
       }}>
         {showPrompts && conversation.length === 0 && (
           <div 
             style={{
               display: "inline-flex",
-              height: "50px",
+              height: "42px", // Slightly reduced height
               borderRadius: "16px",
               background: "#393836",
               alignItems: "center",
@@ -396,6 +398,7 @@ export default function AgentComponent() {
               overflow: "hidden",
               textOverflow: "ellipsis",
               alignSelf: "flex-start",
+              transition: "transform 0.2s ease",
               '&:hover': {
                 transform: "scale(1.02)",
               }
