@@ -370,12 +370,13 @@ export default function AgentComponent() {
 
       {/* Suggested Prompts Container - with fixed height space */}
       <div style={{
-        height: "50px",
+        height: showPrompts && conversation.length === 0 ? "50px" : "0",
         display: "flex",
         alignItems: "center",
         opacity: showPrompts && conversation.length === 0 ? 1 : 0,
-        transition: "opacity 0.3s ease",
+        transition: "opacity 0.3s ease, height 0.3s ease",
         pointerEvents: showPrompts && conversation.length === 0 ? "auto" : "none",
+        overflow: "hidden",
       }}>
         {showPrompts && conversation.length === 0 && (
           <div style={{
