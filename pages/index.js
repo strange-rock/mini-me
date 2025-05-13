@@ -549,6 +549,28 @@ export default function AgentComponent() {
           box-sizing: border-box;
         }
 
+        /* Reset margins for all paragraphs */
+        p {
+          margin: 0;
+          padding: 0;
+        }
+
+        /* Reset margins for paragraphs within chat bubbles */
+        div > p {
+          margin: 0;
+          padding: 0;
+        }
+
+        /* Reset for ReactMarkdown output */
+        :global(p) {
+          margin: 0 !important;
+          margin-block-start: 0 !important;
+          margin-block-end: 0 !important;
+          margin-inline-start: 0 !important;
+          margin-inline-end: 0 !important;
+          padding: 0;
+        }
+
         .chat-container::-webkit-scrollbar {
           width: 6px;
         }
@@ -615,26 +637,6 @@ export default function AgentComponent() {
             transform: translateY(0);
             filter: blur(0);
           }
-        }
-
-        /* Add styles for markdown paragraphs */
-        p {
-          display: block;
-          margin-block-start: 0;
-          margin-block-end: 0;
-          margin-inline-start: 0px;
-          margin-inline-end: 0px;
-          margin: 8px 0;
-        }
-        
-        /* First paragraph should not have top margin */
-        p:first-child {
-          margin-top: 0;
-        }
-        
-        /* Last paragraph should not have bottom margin */
-        p:last-child {
-          margin-bottom: 0;
         }
       `}</style>
     </div>
