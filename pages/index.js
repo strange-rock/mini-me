@@ -380,7 +380,9 @@ export default function AgentComponent() {
         overflow: "hidden",
       }}>
         {showPrompts && conversation.length === 0 && (
-          <div style={{
+          <div 
+            key={currentPromptIndex}
+            style={{
             display: "inline-flex",
             height: "50px",
             borderRadius: "16px",
@@ -404,7 +406,7 @@ export default function AgentComponent() {
           >
             {chatConfig.suggestedPrompts[currentPromptIndex].split(' ').map((word, index) => (
               <span
-                key={index}
+                key={`${currentPromptIndex}-${index}`}
                 style={{
                   display: 'inline-block',
                   animation: `promptIn 0.5s cubic-bezier(0.15, 1.15, 0.6, 1.0) forwards`,
