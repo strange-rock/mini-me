@@ -317,7 +317,7 @@ export default function AgentComponent() {
         borderRadius: "24px",
         background: "#FFF",
         margin: "20px auto",
-        boxShadow: "rgba(0, 0, 0, 0.2) 0px 0.4829px 1.25554px -2.25px, rgba(0, 0, 0, 0.02) 0px 4px 10.4px -4.5px, rgba(0, 0, 0, 0.18) 0px 0.60219px 0.60219px -1.25px, rgba(0, 0, 0, 0.16) 0px 2.28853px 2.28853px -2.5px, rgba(0, 0, 0, 0.06) 0px 10px 10px -3.75px",
+        boxShadow: "rgba(0, 0, 0, 0.2) 0px 0.482901px 1.25554px -2.25px, rgba(0, 0, 0, 0.02) 0px 4px 10.4px -4.5px, rgba(0, 0, 0, 0.18) 0px 0.602187px 0.602187px -1.25px, rgba(0, 0, 0, 0.16) 0px 2.28853px 2.28853px -2.5px, rgba(0, 0, 0, 0.06) 0px 10px 10px -3.75px",
         position: "relative",
         overflow: "hidden",
         fontFamily: "Switzer, sans-serif",
