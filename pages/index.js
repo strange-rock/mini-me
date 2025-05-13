@@ -472,7 +472,7 @@ export default function AgentComponent() {
               outline: "none",
               background: "transparent",
               padding: "12px",
-              fontSize: "20px",
+              fontSize: "16px",
               color: "#000000",
               fontFamily: "Switzer, sans-serif",
               width: "100%",
