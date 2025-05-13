@@ -126,7 +126,7 @@ export default function AgentComponent() {
       setCurrentPromptIndex((prevIndex) => 
         (prevIndex + 1) % chatConfig.suggestedPrompts.length
       );
-    }, 2000);
+    }, 4000);
 
     return () => clearInterval(interval);
   }, []);
@@ -317,6 +317,7 @@ export default function AgentComponent() {
         borderRadius: "24px",
         background: "#FFF",
         margin: "20px auto",
+        border: "1px solid #EDEDED",
         boxShadow: "rgba(0, 0, 0, 0.2) 0px 0.482901px 1.25554px -2.25px, rgba(0, 0, 0, 0.02) 0px 4px 10.4px -4.5px, rgba(0, 0, 0, 0.18) 0px 0.602187px 0.602187px -1.25px, rgba(0, 0, 0, 0.16) 0px 2.28853px 2.28853px -2.5px, rgba(0, 0, 0, 0.06) 0px 10px 10px -3.75px",
         position: "relative",
         overflow: "hidden",
@@ -368,7 +369,7 @@ export default function AgentComponent() {
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Suggested Prompts Container - with fixed height space */}
+      {/* Suggested Prompts Container */}
       <div style={{
         height: showPrompts && conversation.length === 0 ? "50px" : "0",
         display: "flex",
@@ -389,21 +390,32 @@ export default function AgentComponent() {
             color: "#FFFFFF",
             fontSize: "14px",
             padding: "0 16px",
-            transition: "opacity 0.3s ease, transform 0.3s ease",
-            opacity: isLoading ? 0.5 : 1,
             cursor: "pointer",
             whiteSpace: "nowrap",
             overflow: "hidden",
             textOverflow: "ellipsis",
             alignSelf: "flex-start",
-            transform: isLoading ? "scale(0.98)" : "scale(1)",
+            animation: "promptIn 0.5s cubic-bezier(0.15, 1.15, 0.6, 1.0) forwards",
             '&:hover': {
               transform: "scale(1.02)",
             }
           }}
           onClick={() => handlePromptClick(chatConfig.suggestedPrompts[currentPromptIndex])}
           >
-            {chatConfig.suggestedPrompts[currentPromptIndex]}
+            {chatConfig.suggestedPrompts[currentPromptIndex].split(' ').map((word, index) => (
+              <span
+                key={index}
+                style={{
+                  display: 'inline-block',
+                  animation: `promptIn 0.5s cubic-bezier(0.15, 1.15, 0.6, 1.0) forwards`,
+                  animationDelay: `${index * 0.1}s`,
+                  opacity: 0,
+                  marginRight: '4px'
+                }}
+              >
+                {word}
+              </span>
+            ))}
           </div>
         )}
       </div>
@@ -460,7 +472,7 @@ export default function AgentComponent() {
           style={{
             width: "53px",
             height: "53px",
-            borderRadius: "10px",
+            borderRadius: "16px",
             border: "1px solid #5B5B5B",
             background: "#393836",
             display: "flex",
@@ -586,6 +598,19 @@ export default function AgentComponent() {
           100% {
             opacity: 1;
             transform: translateY(0) scale(1);
+          }
+        }
+
+        @keyframes promptIn {
+          0% {
+            opacity: 0;
+            transform: translateY(10px);
+            filter: blur(6px);
+          }
+          100% {
+            opacity: 1;
+            transform: translateY(0);
+            filter: blur(0);
           }
         }
       `}</style>
