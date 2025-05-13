@@ -378,8 +378,7 @@ export default function AgentComponent() {
         transition: "opacity 0.3s ease, height 0.3s ease",
         pointerEvents: showPrompts && conversation.length === 0 ? "auto" : "none",
         overflow: "hidden",
-        marginBottom: showPrompts && conversation.length === 0 ? "8px" : "0",
-        transform: "translateY(-4px)"
+        marginBottom: showPrompts && conversation.length === 0 ? "8px" : "0"
       }}>
         {showPrompts && conversation.length === 0 && (
           <div 
@@ -411,8 +410,8 @@ export default function AgentComponent() {
                   key={`${currentPromptIndex}-${index}`}
                   style={{
                     display: 'inline-block',
-                    animation: `promptIn 0.5s cubic-bezier(0.15, 1.15, 0.6, 1.0) forwards`,
-                    animationDelay: `${index * 0.1}s`,
+                    animation: `promptIn 0.3s cubic-bezier(0.15, 1.15, 0.6, 1.0) forwards`,
+                    animationDelay: `${index * 0.05}s`,
                     opacity: 0
                   }}
                 >
