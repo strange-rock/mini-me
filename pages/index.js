@@ -79,7 +79,7 @@ const TypewriterText = ({ content }) => {
       const timeout = setTimeout(() => {
         setDisplayedContent(prev => prev + (currentIndex === 0 ? '' : ' ') + words[currentIndex]);
         setCurrentIndex(currentIndex + 1);
-      }, 100);
+      }, 50); // Faster word appearance
       
       return () => clearTimeout(timeout);
     }
@@ -91,11 +91,8 @@ const TypewriterText = ({ content }) => {
         <span
           key={index}
           className="animated-word"
-          style={{
-            animationDelay: `${index * 0.05}s`
-          }}
         >
-          {word}{' '}
+          {word}
         </span>
       ))}
     </div>
@@ -670,17 +667,19 @@ export default function AgentComponent() {
         }
 
         .animated-text {
-          display: flex;
-          flex-wrap: wrap;
-          gap: 4px;
+          display: inline;
+          white-space: pre-wrap;
         }
 
         :global(.animated-word) {
-          display: inline-block;
           opacity: 0;
           filter: blur(6px);
           transform: translateX(5px);
           animation: wordIn 0.3s cubic-bezier(0.15, 1.15, 0.6, 1.0) forwards;
+        }
+
+        :global(.animated-word:not(:last-child)) {
+          margin-right: 4px;
         }
 
         @keyframes wordIn {
