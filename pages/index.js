@@ -68,62 +68,6 @@ const getUserId = () => {
   return userId;
 };
 
-// Add TypewriterText component
-const TypewriterText = ({ content }) => {
-  const [words, setWords] = useState([]);
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [height, setHeight] = useState(0);
-  const visibleTextRef = useRef(null);
-  
-  useEffect(() => {
-    // Split content into words while preserving spaces
-    const splitContent = content.split(/(\s+)/).filter(Boolean);
-    setWords(splitContent);
-    
-    // Start the word reveal immediately with no delay
-    const interval = setInterval(() => {
-      setCurrentIndex(prev => {
-        if (prev < splitContent.length - 1) {
-          return prev + 1;
-        } else {
-          clearInterval(interval);
-          return prev;
-        }
-      });
-    }, 25);
-
-    return () => clearInterval(interval);
-  }, [content]);
-
-  // Update height whenever visible content changes
-  useEffect(() => {
-    if (visibleTextRef.current) {
-      setHeight(visibleTextRef.current.offsetHeight);
-    }
-  }, [currentIndex]);
-
-  const visibleContent = words.slice(0, currentIndex + 1).join('');
-
-  return (
-    <div style={{ 
-      position: 'relative',
-      height: height,
-      transition: 'height 0.15s cubic-bezier(0.15, 1.15, 0.6, 1.0)',
-    }}>
-      <div
-        ref={visibleTextRef}
-        style={{ 
-          position: 'absolute',
-          width: '100%',
-          whiteSpace: 'pre-wrap',
-        }}
-      >
-        {visibleContent}
-      </div>
-    </div>
-  );
-};
-
 /**
  * AgentComponent renders a chat interface with user and agent bubbles.
  * It manages the conversation state, handles user input and API requests,
@@ -408,13 +352,10 @@ export default function AgentComponent() {
             style={{
               ...msg.role === "user" ? bubbleStyles.user : bubbleStyles.agent,
               animationDelay: `${index * 0.1}s`,
-              transition: "all 0.15s cubic-bezier(0.15, 1.15, 0.6, 1.0)",
-              display: "inline-block",
-              width: "fit-content",
             }}
           >
             {msg.role === "agent" ? (
-              <TypewriterText content={msg.content} />
+              <ReactMarkdown>{msg.content}</ReactMarkdown>
             ) : (
               msg.content
             )}
