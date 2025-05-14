@@ -74,7 +74,7 @@ const TypewriterText = ({ content }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   
   useEffect(() => {
-    // Split content into words, preserving markdown
+    // Split content into words while preserving spaces
     const splitContent = content.split(/(\s+)/).filter(Boolean);
     setWords(splitContent);
   }, [content]);
@@ -90,21 +90,19 @@ const TypewriterText = ({ content }) => {
   }, [currentIndex, words]);
 
   return (
-    <div style={{ display: 'inline' }}>
+    <span style={{ whiteSpace: 'pre-wrap' }}>
       {words.map((word, index) => (
         <span
           key={index}
           style={{
-            display: 'inline',
             opacity: index <= currentIndex ? 1 : 0,
-            transition: 'opacity 0.6s cubic-bezier(0.23, 1, 0.32, 1)',
-            visibility: index <= currentIndex ? 'visible' : 'hidden',
+            transition: 'opacity 0.6s cubic-bezier(0.15, 1.15, 0.6, 1.0)', // Spring-like easing
           }}
         >
-          {index <= currentIndex && <ReactMarkdown>{word}</ReactMarkdown>}
+          {word}
         </span>
       ))}
-    </div>
+    </span>
   );
 };
 
