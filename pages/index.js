@@ -72,17 +72,18 @@ const getUserId = () => {
 const TypewriterText = ({ content }) => {
   const [displayedContent, setDisplayedContent] = useState('');
   const [currentIndex, setCurrentIndex] = useState(0);
+  const words = content.split(' ');
   
   useEffect(() => {
-    if (currentIndex < content.length) {
+    if (currentIndex < words.length) {
       const timeout = setTimeout(() => {
-        setDisplayedContent(prev => prev + content[currentIndex]);
+        setDisplayedContent(prev => prev + (currentIndex === 0 ? '' : ' ') + words[currentIndex]);
         setCurrentIndex(currentIndex + 1);
-      }, 30); // Adjust speed here (lower = faster)
+      }, 100); // Adjust speed here (lower = faster)
       
       return () => clearTimeout(timeout);
     }
-  }, [currentIndex, content]);
+  }, [currentIndex, words]);
 
   return <ReactMarkdown>{displayedContent}</ReactMarkdown>;
 };
