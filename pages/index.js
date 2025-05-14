@@ -87,7 +87,17 @@ const TypewriterText = ({ content }) => {
 
   return (
     <div className="animated-text">
-      <ReactMarkdown>{displayedContent}</ReactMarkdown>
+      {displayedContent.split(' ').map((word, index) => (
+        <span
+          key={index}
+          className="animated-word"
+          style={{
+            animationDelay: `${index * 0.05}s`
+          }}
+        >
+          {word}{' '}
+        </span>
+      ))}
     </div>
   );
 };
@@ -659,17 +669,18 @@ export default function AgentComponent() {
           }
         }
 
-        .animated-text :global(p) {
+        .animated-text {
           display: flex;
           flex-wrap: wrap;
           gap: 4px;
-          margin: 0;
         }
 
-        .animated-text :global(p > *) {
+        :global(.animated-word) {
           display: inline-block;
-          animation: wordIn 0.3s cubic-bezier(0.15, 1.15, 0.6, 1.0) forwards;
           opacity: 0;
+          filter: blur(6px);
+          transform: translateX(5px);
+          animation: wordIn 0.3s cubic-bezier(0.15, 1.15, 0.6, 1.0) forwards;
         }
 
         @keyframes wordIn {
