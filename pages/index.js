@@ -346,8 +346,10 @@ export default function AgentComponent() {
           gap: "12px",
           boxSizing: "border-box",
           transition: "height 0.3s ease", // Smooth height transition
+          position: "relative", // Added for pseudo-element positioning
         }}
       >
+        <div className="fade-top" />
         {conversation.map((msg, index) => (
           <div
             key={index}
@@ -378,6 +380,7 @@ export default function AgentComponent() {
           </div>
         )}
         <div ref={messagesEndRef} />
+        <div className="fade-bottom" />
       </div>
 
       {/* Suggested Prompts Container */}
@@ -639,6 +642,28 @@ export default function AgentComponent() {
             transform: translateY(0);
             filter: blur(0);
           }
+        }
+
+        .fade-top {
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          height: 40px;
+          background: linear-gradient(to bottom, rgba(255,255,255,1) 0%, rgba(255,255,255,0) 100%);
+          pointer-events: none;
+          z-index: 1;
+        }
+
+        .fade-bottom {
+          position: absolute;
+          bottom: 0;
+          left: 0;
+          right: 0;
+          height: 40px;
+          background: linear-gradient(to top, rgba(255,255,255,1) 0%, rgba(255,255,255,0) 100%);
+          pointer-events: none;
+          z-index: 1;
         }
       `}</style>
     </div>
