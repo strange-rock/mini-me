@@ -339,47 +339,55 @@ export default function AgentComponent() {
           alignSelf: "stretch",
           borderRadius: "16px",
           background: "#FFFFFF",
-          padding: "16px",
           overflowY: "auto",
           display: "flex",
           flexDirection: "column",
-          gap: "12px",
           boxSizing: "border-box",
           transition: "height 0.3s ease", // Smooth height transition
           position: "relative", // Added for pseudo-element positioning
         }}
       >
         <div className="fade-top" />
-        {conversation.map((msg, index) => (
-          <div
-            key={index}
-            style={{
-              ...msg.role === "user" ? bubbleStyles.user : bubbleStyles.agent,
-              animationDelay: `${index * 0.1}s`,
-            }}
-          >
-            {msg.role === "agent" ? (
-              <ReactMarkdown>{msg.content}</ReactMarkdown>
-            ) : (
-              msg.content
-            )}
-          </div>
-        ))}
-        {isTyping && (
-          <div
-            style={{
-              ...bubbleStyles.agent,
-              animationDelay: '0s',
-            }}
-          >
-            <div className="typing-indicator" style={{ padding: 0 }}>
-              <div className="dot" style={{ background: '#393836' }}></div>
-              <div className="dot" style={{ background: '#393836' }}></div>
-              <div className="dot" style={{ background: '#393836' }}></div>
+        <div className="chat-content"
+          style={{
+            padding: "16px",
+            display: "flex",
+            flexDirection: "column",
+            gap: "12px",
+            width: "100%",
+          }}
+        >
+          {conversation.map((msg, index) => (
+            <div
+              key={index}
+              style={{
+                ...msg.role === "user" ? bubbleStyles.user : bubbleStyles.agent,
+                animationDelay: `${index * 0.1}s`,
+              }}
+            >
+              {msg.role === "agent" ? (
+                <ReactMarkdown>{msg.content}</ReactMarkdown>
+              ) : (
+                msg.content
+              )}
             </div>
-          </div>
-        )}
-        <div ref={messagesEndRef} />
+          ))}
+          {isTyping && (
+            <div
+              style={{
+                ...bubbleStyles.agent,
+                animationDelay: '0s',
+              }}
+            >
+              <div className="typing-indicator" style={{ padding: 0 }}>
+                <div className="dot" style={{ background: '#393836' }}></div>
+                <div className="dot" style={{ background: '#393836' }}></div>
+                <div className="dot" style={{ background: '#393836' }}></div>
+              </div>
+            </div>
+          )}
+          <div ref={messagesEndRef} />
+        </div>
         <div className="fade-bottom" />
       </div>
 
@@ -592,7 +600,7 @@ export default function AgentComponent() {
           background-color: rgba(0,0,0,0.3);
         }
         .chat-container {
-          position: relative !important;
+          position: relative;
           scrollbar-width: thin;
           scrollbar-color: rgba(0,0,0,0.2) rgba(0,0,0,0.05);
         }
@@ -646,7 +654,7 @@ export default function AgentComponent() {
         }
 
         .fade-top {
-          position: absolute;
+          position: sticky;
           top: 0;
           left: 0;
           right: 0;
@@ -656,11 +664,10 @@ export default function AgentComponent() {
           z-index: 2;
           border-radius: 16px 16px 0 0;
           margin: 0;
-          padding: 0;
         }
 
         .fade-bottom {
-          position: absolute;
+          position: sticky;
           bottom: 0;
           left: 0;
           right: 0;
@@ -670,7 +677,6 @@ export default function AgentComponent() {
           z-index: 2;
           border-radius: 0 0 16px 16px;
           margin: 0;
-          padding: 0;
         }
       `}</style>
     </div>
