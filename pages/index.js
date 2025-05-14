@@ -592,6 +592,7 @@ export default function AgentComponent() {
           background-color: rgba(0,0,0,0.3);
         }
         .chat-container {
+          position: relative !important;
           scrollbar-width: thin;
           scrollbar-color: rgba(0,0,0,0.2) rgba(0,0,0,0.05);
         }
@@ -652,7 +653,10 @@ export default function AgentComponent() {
           height: 40px;
           background: linear-gradient(to bottom, rgba(255,255,255,1) 0%, rgba(255,255,255,0) 100%);
           pointer-events: none;
-          z-index: 1;
+          z-index: 2;
+          border-radius: 16px 16px 0 0;
+          margin: 0;
+          padding: 0;
         }
 
         .fade-bottom {
@@ -663,7 +667,10 @@ export default function AgentComponent() {
           height: 40px;
           background: linear-gradient(to top, rgba(255,255,255,1) 0%, rgba(255,255,255,0) 100%);
           pointer-events: none;
-          z-index: 1;
+          z-index: 2;
+          border-radius: 0 0 16px 16px;
+          margin: 0;
+          padding: 0;
         }
       `}</style>
     </div>
