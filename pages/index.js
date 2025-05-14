@@ -90,7 +90,7 @@ const TypewriterText = ({ content }) => {
           return prev;
         }
       });
-    }, 25); // Faster reveal speed
+    }, 25);
 
     return () => clearInterval(interval);
   }, [content]);
@@ -101,6 +101,8 @@ const TypewriterText = ({ content }) => {
       setHeight(visibleTextRef.current.offsetHeight);
     }
   }, [currentIndex]);
+
+  const visibleContent = words.slice(0, currentIndex + 1).join('');
 
   return (
     <div style={{ 
@@ -116,18 +118,7 @@ const TypewriterText = ({ content }) => {
           whiteSpace: 'pre-wrap',
         }}
       >
-        {words.map((word, index) => (
-          <span
-            key={index}
-            style={{
-              opacity: index <= currentIndex ? 1 : 0,
-              transition: 'opacity 0.15s cubic-bezier(0.15, 1.15, 0.6, 1.0)',
-              display: 'inline',
-            }}
-          >
-            {word}
-          </span>
-        ))}
+        {visibleContent}
       </div>
     </div>
   );
