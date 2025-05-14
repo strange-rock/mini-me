@@ -72,9 +72,6 @@ const getUserId = () => {
 const TypewriterText = ({ content }) => {
   const [words, setWords] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const containerRef = useRef(null);
-  const [height, setHeight] = useState(0);
-  const [fullHeight, setFullHeight] = useState(0);
   
   useEffect(() => {
     // Split content into words while preserving spaces
@@ -91,53 +88,19 @@ const TypewriterText = ({ content }) => {
           return prev;
         }
       });
-    }, 50); // Faster reveal speed (was 100ms)
+    }, 50); // Faster reveal speed
 
     return () => clearInterval(interval);
   }, [content]);
 
-  // Calculate and set the full height once content is loaded
-  useEffect(() => {
-    if (containerRef.current) {
-      const tempSpan = document.createElement('span');
-      tempSpan.style.cssText = `
-        position: absolute;
-        visibility: hidden;
-        white-space: pre-wrap;
-        width: ${containerRef.current.offsetWidth}px;
-      `;
-      tempSpan.textContent = content;
-      document.body.appendChild(tempSpan);
-      setFullHeight(tempSpan.offsetHeight);
-      document.body.removeChild(tempSpan);
-    }
-  }, [content]);
-
-  // Update height based on current progress
-  useEffect(() => {
-    if (words.length > 0) {
-      const progress = (currentIndex + 1) / words.length;
-      setHeight(Math.ceil(fullHeight * progress));
-    }
-  }, [currentIndex, words.length, fullHeight]);
-
   return (
-    <span 
-      ref={containerRef}
-      style={{ 
-        whiteSpace: 'pre-wrap',
-        display: 'inline-block',
-        height: `${height}px`,
-        transition: 'height 0.2s cubic-bezier(0.15, 1.15, 0.6, 1.0)',
-        overflow: 'hidden'
-      }}
-    >
+    <span style={{ display: 'inline' }}>
       {words.map((word, index) => (
         <span
           key={index}
           style={{
             opacity: index <= currentIndex ? 1 : 0,
-            transition: 'opacity 0.3s cubic-bezier(0.15, 1.15, 0.6, 1.0)', // Faster fade-in
+            transition: 'opacity 0.3s cubic-bezier(0.15, 1.15, 0.6, 1.0)',
           }}
         >
           {word}
@@ -432,7 +395,8 @@ export default function AgentComponent() {
               ...msg.role === "user" ? bubbleStyles.user : bubbleStyles.agent,
               animationDelay: `${index * 0.1}s`,
               transition: "all 0.2s cubic-bezier(0.15, 1.15, 0.6, 1.0)",
-              overflow: 'hidden',
+              display: "inline-block",
+              width: "fit-content",
             }}
           >
             {msg.role === "agent" ? (
