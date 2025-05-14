@@ -72,6 +72,8 @@ const getUserId = () => {
 const TypewriterText = ({ content }) => {
   const [words, setWords] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const containerRef = useRef(null);
+  const [height, setHeight] = useState("auto");
   
   useEffect(() => {
     // Split content into words while preserving spaces
@@ -89,8 +91,24 @@ const TypewriterText = ({ content }) => {
     }
   }, [currentIndex, words]);
 
+  // Update height when content changes
+  useEffect(() => {
+    if (containerRef.current) {
+      const newHeight = containerRef.current.scrollHeight;
+      setHeight(`${newHeight}px`);
+    }
+  }, [currentIndex]);
+
   return (
-    <span style={{ whiteSpace: 'pre-wrap' }}>
+    <span 
+      ref={containerRef}
+      style={{ 
+        whiteSpace: 'pre-wrap',
+        display: 'inline-block',
+        minHeight: height,
+        transition: 'min-height 0.3s cubic-bezier(0.15, 1.15, 0.6, 1.0)',
+      }}
+    >
       {words.map((word, index) => (
         <span
           key={index}
@@ -390,6 +408,9 @@ export default function AgentComponent() {
             style={{
               ...msg.role === "user" ? bubbleStyles.user : bubbleStyles.agent,
               animationDelay: `${index * 0.1}s`,
+              transition: "all 0.3s cubic-bezier(0.15, 1.15, 0.6, 1.0)",
+              height: "auto",
+              minHeight: "fit-content",
             }}
           >
             {msg.role === "agent" ? (
