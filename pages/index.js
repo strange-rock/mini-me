@@ -126,7 +126,7 @@ export default function AgentComponent() {
       setCurrentPromptIndex((prevIndex) => 
         (prevIndex + 1) % chatConfig.suggestedPrompts.length
       );
-    }, 4000);
+    }, 2500);
 
     return () => clearInterval(interval);
   }, []);
