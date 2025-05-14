@@ -72,6 +72,8 @@ const getUserId = () => {
 const TypewriterText = ({ content }) => {
   const [words, setWords] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [height, setHeight] = useState(0);
+  const visibleTextRef = useRef(null);
   
   useEffect(() => {
     // Split content into words while preserving spaces
@@ -88,25 +90,46 @@ const TypewriterText = ({ content }) => {
           return prev;
         }
       });
-    }, 50); // Faster reveal speed
+    }, 25); // Faster reveal speed
 
     return () => clearInterval(interval);
   }, [content]);
 
+  // Update height whenever visible content changes
+  useEffect(() => {
+    if (visibleTextRef.current) {
+      setHeight(visibleTextRef.current.offsetHeight);
+    }
+  }, [currentIndex]);
+
   return (
-    <span style={{ display: 'inline' }}>
-      {words.map((word, index) => (
-        <span
-          key={index}
-          style={{
-            opacity: index <= currentIndex ? 1 : 0,
-            transition: 'opacity 0.3s cubic-bezier(0.15, 1.15, 0.6, 1.0)',
-          }}
-        >
-          {word}
-        </span>
-      ))}
-    </span>
+    <div style={{ 
+      position: 'relative',
+      height: height,
+      transition: 'height 0.15s cubic-bezier(0.15, 1.15, 0.6, 1.0)',
+    }}>
+      <div
+        ref={visibleTextRef}
+        style={{ 
+          position: 'absolute',
+          width: '100%',
+          whiteSpace: 'pre-wrap',
+        }}
+      >
+        {words.map((word, index) => (
+          <span
+            key={index}
+            style={{
+              opacity: index <= currentIndex ? 1 : 0,
+              transition: 'opacity 0.15s cubic-bezier(0.15, 1.15, 0.6, 1.0)',
+              display: 'inline',
+            }}
+          >
+            {word}
+          </span>
+        ))}
+      </div>
+    </div>
   );
 };
 
@@ -394,7 +417,7 @@ export default function AgentComponent() {
             style={{
               ...msg.role === "user" ? bubbleStyles.user : bubbleStyles.agent,
               animationDelay: `${index * 0.1}s`,
-              transition: "all 0.2s cubic-bezier(0.15, 1.15, 0.6, 1.0)",
+              transition: "all 0.15s cubic-bezier(0.15, 1.15, 0.6, 1.0)",
               display: "inline-block",
               width: "fit-content",
             }}
