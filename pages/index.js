@@ -259,7 +259,7 @@ export default function AgentComponent() {
       transform: "translateY(20px) scale(0.9)",
       opacity: 0,
       animation: "bubbleIn 0.3s ease-out forwards",
-      fontFamily: "Switzer, sans-serif",
+      fontFamily: "Manrope, sans-serif",
     },
     agent: {
       alignSelf: "flex-start",
@@ -276,7 +276,7 @@ export default function AgentComponent() {
       transform: "translateY(20px) scale(0.9)",
       opacity: 0,
       animation: "bubbleIn 0.3s ease-out forwards",
-      fontFamily: "Switzer, sans-serif",
+      fontFamily: "Manrope, sans-serif",
     },
   };
 
@@ -325,7 +325,7 @@ export default function AgentComponent() {
         boxShadow: "rgba(0, 0, 0, 0.2) 0px 0.482901px 1.25554px -2.25px, rgba(0, 0, 0, 0.02) 0px 4px 10.4px -4.5px, rgba(0, 0, 0, 0.18) 0px 0.602187px 0.602187px -1.25px, rgba(0, 0, 0, 0.16) 0px 2.28853px 2.28853px -2.5px, rgba(0, 0, 0, 0.06) 0px 10px 10px -3.75px",
         position: "relative",
         overflow: "hidden",
-        fontFamily: "Switzer, sans-serif",
+        fontFamily: "Manrope, sans-serif",
         boxSizing: "border-box",
         height: "480px", // Fixed height for main container
       }}
@@ -410,6 +410,7 @@ export default function AgentComponent() {
               textOverflow: "ellipsis",
               alignSelf: "flex-start",
               transition: "transform 0.2s ease",
+              fontFamily: "Manrope, sans-serif",
               '&:hover': {
                 transform: "scale(1.02)",
               }
@@ -478,7 +479,7 @@ export default function AgentComponent() {
               fontSize: "16px",
               fontWeight: "500",
               color: "#000000",
-              fontFamily: "Switzer, sans-serif",
+              fontFamily: "Manrope, sans-serif",
               width: "100%",
               boxSizing: "border-box",
             }}
@@ -543,10 +544,11 @@ export default function AgentComponent() {
       )}
 
       <style jsx>{`
-        @import url('https://fonts.googleapis.com/css2?family=Switzer:wght@400;500;600&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600&display=swap');
 
         * {
           box-sizing: border-box;
+          font-family: 'Manrope', sans-serif;
         }
 
         /* Reset margins for all paragraphs */
