@@ -70,29 +70,38 @@ const getUserId = () => {
 
 // Add TypewriterText component
 const TypewriterText = ({ content }) => {
-  const [displayedContent, setDisplayedContent] = useState('');
+  const [words, setWords] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const words = content.split(' ');
   
+  useEffect(() => {
+    // Split content into words, preserving markdown
+    const splitContent = content.split(/(\s+)/).filter(Boolean);
+    setWords(splitContent);
+  }, [content]);
+
   useEffect(() => {
     if (currentIndex < words.length) {
       const timeout = setTimeout(() => {
-        setDisplayedContent(prev => prev + (currentIndex === 0 ? '' : ' ') + words[currentIndex]);
         setCurrentIndex(currentIndex + 1);
-      }, 50); // Faster word appearance
+      }, 100); // Delay between words
       
       return () => clearTimeout(timeout);
     }
   }, [currentIndex, words]);
 
   return (
-    <div className="animated-text">
-      {displayedContent.split(' ').map((word, index) => (
+    <div style={{ display: 'inline' }}>
+      {words.map((word, index) => (
         <span
           key={index}
-          className="animated-word"
+          style={{
+            display: 'inline',
+            opacity: index <= currentIndex ? 1 : 0,
+            transition: 'opacity 0.6s cubic-bezier(0.23, 1, 0.32, 1)',
+            visibility: index <= currentIndex ? 'visible' : 'hidden',
+          }}
         >
-          {word}
+          {index <= currentIndex && <ReactMarkdown>{word}</ReactMarkdown>}
         </span>
       ))}
     </div>
@@ -662,35 +671,6 @@ export default function AgentComponent() {
           100% {
             opacity: 1;
             transform: translateY(0);
-            filter: blur(0);
-          }
-        }
-
-        .animated-text {
-          display: inline;
-          white-space: pre-wrap;
-        }
-
-        :global(.animated-word) {
-          opacity: 0;
-          filter: blur(6px);
-          transform: translateX(5px);
-          animation: wordIn 0.3s cubic-bezier(0.15, 1.15, 0.6, 1.0) forwards;
-        }
-
-        :global(.animated-word:not(:last-child)) {
-          margin-right: 4px;
-        }
-
-        @keyframes wordIn {
-          0% {
-            opacity: 0;
-            transform: translateX(5px);
-            filter: blur(6px);
-          }
-          100% {
-            opacity: 1;
-            transform: translateX(0);
             filter: blur(0);
           }
         }
