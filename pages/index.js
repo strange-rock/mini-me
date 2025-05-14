@@ -73,31 +73,53 @@ const TypewriterText = ({ content }) => {
   const [words, setWords] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const containerRef = useRef(null);
-  const [height, setHeight] = useState("auto");
+  const [height, setHeight] = useState(0);
+  const [fullHeight, setFullHeight] = useState(0);
   
   useEffect(() => {
     // Split content into words while preserving spaces
     const splitContent = content.split(/(\s+)/).filter(Boolean);
     setWords(splitContent);
+    
+    // Start the word reveal immediately with no delay
+    const interval = setInterval(() => {
+      setCurrentIndex(prev => {
+        if (prev < splitContent.length - 1) {
+          return prev + 1;
+        } else {
+          clearInterval(interval);
+          return prev;
+        }
+      });
+    }, 50); // Faster reveal speed (was 100ms)
+
+    return () => clearInterval(interval);
   }, [content]);
 
-  useEffect(() => {
-    if (currentIndex < words.length) {
-      const timeout = setTimeout(() => {
-        setCurrentIndex(currentIndex + 1);
-      }, 100); // Delay between words
-      
-      return () => clearTimeout(timeout);
-    }
-  }, [currentIndex, words]);
-
-  // Update height when content changes
+  // Calculate and set the full height once content is loaded
   useEffect(() => {
     if (containerRef.current) {
-      const newHeight = containerRef.current.scrollHeight;
-      setHeight(`${newHeight}px`);
+      const tempSpan = document.createElement('span');
+      tempSpan.style.cssText = `
+        position: absolute;
+        visibility: hidden;
+        white-space: pre-wrap;
+        width: ${containerRef.current.offsetWidth}px;
+      `;
+      tempSpan.textContent = content;
+      document.body.appendChild(tempSpan);
+      setFullHeight(tempSpan.offsetHeight);
+      document.body.removeChild(tempSpan);
     }
-  }, [currentIndex]);
+  }, [content]);
+
+  // Update height based on current progress
+  useEffect(() => {
+    if (words.length > 0) {
+      const progress = (currentIndex + 1) / words.length;
+      setHeight(Math.ceil(fullHeight * progress));
+    }
+  }, [currentIndex, words.length, fullHeight]);
 
   return (
     <span 
@@ -105,8 +127,9 @@ const TypewriterText = ({ content }) => {
       style={{ 
         whiteSpace: 'pre-wrap',
         display: 'inline-block',
-        minHeight: height,
-        transition: 'min-height 0.3s cubic-bezier(0.15, 1.15, 0.6, 1.0)',
+        height: `${height}px`,
+        transition: 'height 0.2s cubic-bezier(0.15, 1.15, 0.6, 1.0)',
+        overflow: 'hidden'
       }}
     >
       {words.map((word, index) => (
@@ -114,7 +137,7 @@ const TypewriterText = ({ content }) => {
           key={index}
           style={{
             opacity: index <= currentIndex ? 1 : 0,
-            transition: 'opacity 0.6s cubic-bezier(0.15, 1.15, 0.6, 1.0)', // Spring-like easing
+            transition: 'opacity 0.3s cubic-bezier(0.15, 1.15, 0.6, 1.0)', // Faster fade-in
           }}
         >
           {word}
@@ -408,9 +431,8 @@ export default function AgentComponent() {
             style={{
               ...msg.role === "user" ? bubbleStyles.user : bubbleStyles.agent,
               animationDelay: `${index * 0.1}s`,
-              transition: "all 0.3s cubic-bezier(0.15, 1.15, 0.6, 1.0)",
-              height: "auto",
-              minHeight: "fit-content",
+              transition: "all 0.2s cubic-bezier(0.15, 1.15, 0.6, 1.0)",
+              overflow: 'hidden',
             }}
           >
             {msg.role === "agent" ? (
