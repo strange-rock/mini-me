@@ -79,13 +79,17 @@ const TypewriterText = ({ content }) => {
       const timeout = setTimeout(() => {
         setDisplayedContent(prev => prev + (currentIndex === 0 ? '' : ' ') + words[currentIndex]);
         setCurrentIndex(currentIndex + 1);
-      }, 100); // Adjust speed here (lower = faster)
+      }, 100);
       
       return () => clearTimeout(timeout);
     }
   }, [currentIndex, words]);
 
-  return <ReactMarkdown>{displayedContent}</ReactMarkdown>;
+  return (
+    <div className="animated-text">
+      <ReactMarkdown>{displayedContent}</ReactMarkdown>
+    </div>
+  );
 };
 
 /**
@@ -651,6 +655,32 @@ export default function AgentComponent() {
           100% {
             opacity: 1;
             transform: translateY(0);
+            filter: blur(0);
+          }
+        }
+
+        .animated-text :global(p) {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 4px;
+          margin: 0;
+        }
+
+        .animated-text :global(p > *) {
+          display: inline-block;
+          animation: wordIn 0.3s cubic-bezier(0.15, 1.15, 0.6, 1.0) forwards;
+          opacity: 0;
+        }
+
+        @keyframes wordIn {
+          0% {
+            opacity: 0;
+            transform: translateX(5px);
+            filter: blur(6px);
+          }
+          100% {
+            opacity: 1;
+            transform: translateX(0);
             filter: blur(0);
           }
         }
