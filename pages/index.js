@@ -653,4 +653,7 @@ export default function AgentComponent() {
             filter: blur(0);
           }
         }
-      `
+      `}</style>
+    </div>
+  );
+}
