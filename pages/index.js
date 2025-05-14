@@ -68,6 +68,25 @@ const getUserId = () => {
   return userId;
 };
 
+// Add TypewriterText component
+const TypewriterText = ({ content }) => {
+  const [displayedContent, setDisplayedContent] = useState('');
+  const [currentIndex, setCurrentIndex] = useState(0);
+  
+  useEffect(() => {
+    if (currentIndex < content.length) {
+      const timeout = setTimeout(() => {
+        setDisplayedContent(prev => prev + content[currentIndex]);
+        setCurrentIndex(currentIndex + 1);
+      }, 30); // Adjust speed here (lower = faster)
+      
+      return () => clearTimeout(timeout);
+    }
+  }, [currentIndex, content]);
+
+  return <ReactMarkdown>{displayedContent}</ReactMarkdown>;
+};
+
 /**
  * AgentComponent renders a chat interface with user and agent bubbles.
  * It manages the conversation state, handles user input and API requests,
@@ -355,7 +374,7 @@ export default function AgentComponent() {
             }}
           >
             {msg.role === "agent" ? (
-              <ReactMarkdown>{msg.content}</ReactMarkdown>
+              <TypewriterText content={msg.content} />
             ) : (
               msg.content
             )}
@@ -634,7 +653,4 @@ export default function AgentComponent() {
             filter: blur(0);
           }
         }
-      `}</style>
-    </div>
-  );
-}
+      `
